@@ -1,9 +1,11 @@
 package com.cognixia.jump.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,5 +22,16 @@ public class AddressController {
 	@GetMapping("/addresses")
 	public List<Address> getAllAddresses() {
 		return service.findAll();
+	}
+	
+	@GetMapping("/address/{id}")
+	public Address getAddressById(@PathVariable Long id) throws Exception {
+		Optional<Address> found = service.findById(id);
+		
+		if(!found.isPresent()) {
+			throw new Exception("Address with id=" + id + " not found");
+		}
+		
+		return found.get();
 	}
 }
