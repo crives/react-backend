@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.Pattern;
 
 @Entity
@@ -35,10 +33,6 @@ public class Address implements Serializable {
 	@Column(columnDefinition = "char(5)")
 	@Pattern(regexp = "^\\d{5}$")
 	private String zip;
-
-	@ManyToOne
-	@JoinColumn(name = "restaurant_id", referencedColumnName = "restaurantId")
-	private Restaurant restaurant;
 	
 	public Address() {
 		this(-1L, "N/A", "N/A", "N/A", "N/A");
@@ -92,10 +86,6 @@ public class Address implements Serializable {
 
 	public void setZip(String zip) {
 		this.zip = zip;
-	}
-
-	public void setRestaurant(Restaurant restaurant) {
-		this.restaurant = restaurant;
 	}
 
 	@Override

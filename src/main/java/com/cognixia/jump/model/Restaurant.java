@@ -1,16 +1,13 @@
 package com.cognixia.jump.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -41,16 +38,15 @@ public class Restaurant implements Serializable {
 	@Pattern(regexp = "^\\(\\d{3}\\)\\s?\\d{3}-\\d{4}$")
 	private String phoneNumber;
 
-	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
-	private List<Address> addresses;
+	private Long addresses;
 	
 	public Restaurant() {
-		this(-1L, "N/A", "N/A", "N/A", "N/A", "N/A", new ArrayList<Address>());
+		this(-1L, "N/A", "N/A", "N/A", "N/A", "N/A", -1L);
 	}
 
 	public Restaurant(Long id, @NotNull(message = "Restaurant name must not be null") String name, String imageUrl,
 			String menuLink, String owner, @Pattern(regexp = "^\\(\\d{3}\\)\\s?\\d{3}-\\d{4}$") String phoneNumber,
-			List<Address> addresses) {
+			Long addresses) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -109,11 +105,11 @@ public class Restaurant implements Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public List<Address> getAddresses() {
+	public Long getAddresses() {
 		return addresses;
 	}
 
-	public void setAddresses(List<Address> addresses) {
+	public void setAddresses(List<Long> addresses) {
 		addresses.addAll(addresses);
 	}
 
