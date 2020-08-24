@@ -1,7 +1,8 @@
 package com.cognixia.jump.controller;
 
 import com.cognixia.jump.model.User;
-import com.cognixia.jump.repo.UserRepo;
+import com.cognixia.jump.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import java.util.Optional;
 @RestController
 public class UserController {
     @Autowired
-    private UserRepo service;
+    private UserRepository service;
 
     @GetMapping("/allUsers")
     public List<User> getUsers() {
