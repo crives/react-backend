@@ -1,13 +1,12 @@
 package com.cognixia.jump.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import com.cognixia.jump.model.Restaurant;
 
-@Repository
-public interface RestaurantRepository extends JpaRepository<Restaurant, Long>{
+public interface RestaurantRepository extends MongoRepository<Restaurant, String>{
 
 	@Query("select r from Restaurant r where r.name = ?1")
 	Restaurant findRestaurantByName(String name);

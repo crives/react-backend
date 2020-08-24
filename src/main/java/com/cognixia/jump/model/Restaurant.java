@@ -3,38 +3,29 @@ package com.cognixia.jump.model;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-@Entity
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "restaurant")
 public class Restaurant implements Serializable {
 
 	private static final long serialVersionUID = 6041514973117274821L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "restaurantId")
 	private Long id;
 
-	@Column(columnDefinition = "char(50)")
 	@NotNull(message = "Restaurant name must not be null")
 	private String name;
 
-	@Column
 	private String imageUrl;
 
-	@Column
 	private String menuLink;
 
-	@Column(columnDefinition = "char(50)")
 	private String owner;
 
-	@Column(columnDefinition = "char(16)")
 	@Pattern(regexp = "^\\(\\d{3}\\)\\s?\\d{3}-\\d{4}$")
 	private String phoneNumber;
 

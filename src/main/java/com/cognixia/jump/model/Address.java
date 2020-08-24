@@ -2,35 +2,27 @@ package com.cognixia.jump.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.Pattern;
 
-@Entity
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "address")
 public class Address implements Serializable {
 
 	private static final long serialVersionUID = 3622214286985572253L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "addressId")
 	private Long id;
 
-	@Column
 	@Pattern(regexp = "^[0-9]+\\s[a-zA-Z]\\s*$")
 	private String street;
 
-	@Column
 	private String city;
 
-	@Column(columnDefinition = "char(2)")
 	@Pattern(regexp = "^[A-Z]{2}$")
 	private String state;
 
-	@Column(columnDefinition = "char(5)")
 	@Pattern(regexp = "^\\d{5}$")
 	private String zip;
 	

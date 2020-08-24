@@ -25,7 +25,7 @@ public class AddressController {
 	}
 	
 	@GetMapping("/address/{id}")
-	public Address getAddressById(@PathVariable Long id) throws Exception {
+	public Address getAddressById(@PathVariable String id) throws Exception {
 		Optional<Address> found = service.findById(id);
 		
 		if(!found.isPresent()) {
