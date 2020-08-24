@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 public class User {
+    public static long counter = 0;
 
     public enum Role {
         ROLE_USER, ROLE_ADMIN
