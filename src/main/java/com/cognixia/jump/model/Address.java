@@ -1,17 +1,15 @@
 package com.cognixia.jump.model;
 
-import java.io.Serializable;
-
 import javax.validation.constraints.Pattern;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "address")
-public class Address implements Serializable {
+public class Address {
 
-	private static final long serialVersionUID = 3622214286985572253L;
-
+	public static long counter = 0;
+	
 	@Id
 	private Long id;
 

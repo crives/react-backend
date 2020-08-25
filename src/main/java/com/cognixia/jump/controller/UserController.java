@@ -1,7 +1,8 @@
 package com.cognixia.jump.controller;
 
 import com.cognixia.jump.model.User;
-import com.cognixia.jump.repo.UserRepo;
+import com.cognixia.jump.repository.UserRepo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@RequestMapping("/userApi")
+@RequestMapping("/api")
 @RestController
 public class UserController {
     @Autowired
@@ -44,7 +45,7 @@ public class UserController {
 
     @PostMapping("/add/user")
     public void addUser(@RequestBody User newUser) {
-        newUser.setId(-1L);
+        newUser.setId(User.counter++);
         User added  = service.save(newUser);
 
         System.out.println("Added " + added);

@@ -1,4 +1,4 @@
-package com.cognixia.jump.repo;
+package com.cognixia.jump.repository;
 
 import com.cognixia.jump.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
