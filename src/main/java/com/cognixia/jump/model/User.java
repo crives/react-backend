@@ -23,13 +23,12 @@ public class User {
     private String lastName;
     private Long addressId;
     private Role userRole;
-    private boolean enable;
 
     public User() {
-        this(-1L, "N/A", "N/A", "N/A", "N/A", -1L, Role.ROLE_USER, false);
+        this(-1L, "N/A", "N/A", "N/A", "N/A", -1L, Role.ROLE_USER);
     }
 
-    public User(Long id, String email, String password, String firstName, String lastName, Long addressId, Role userRole, boolean enable) {
+    public User(Long id, String email, String password, String firstName, String lastName, Long addressId, Role userRole) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -37,8 +36,9 @@ public class User {
         this.lastName = lastName;
         this.addressId = addressId;
         this.userRole = userRole;
-        this.enable = enable;
     }
+
+
 
     public Long getId() {
         return id;
@@ -108,17 +108,15 @@ public class User {
         return addressCounter;
     }
 
-    public static void setAddressCounter(long addressCounter) {
-        User.addressCounter = addressCounter;
-    }
+//    public static void setAddressCounter(long addressCounter) {
+//        User.addressCounter = addressCounter;
+//    }
+//
+//    public boolean isEnable() {
+//        return true;
+//    }
 
-    public boolean isEnable() {
-        return enable;
-    }
 
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
 
     @Override
     public String toString() {
@@ -130,7 +128,6 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", addressId=" + addressId +
                 ", userRole=" + userRole +
-                ", enable=" + enable +
                 '}';
     }
 }
