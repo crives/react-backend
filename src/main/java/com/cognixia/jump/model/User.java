@@ -7,9 +7,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "users")
 public class User {
 
+    private static final long serialVersionUID = -4458870115303573931L;
+    @Transient
+    public static final String SEQUENCE_NAME = "user_sequence";
 
-    public static long idCounter = 0;
-    public static long addressCounter = 0;
+
+
+//    public static long idCounter = 0;
+//    public static long addressCounter = 0;
 
     public enum Role {
         ROLE_USER, ROLE_ADMIN
@@ -96,17 +101,17 @@ public class User {
         this.userRole = userRole;
     }
 
-    public static long getIdCounter() {
-        return idCounter;
-    }
-
-    public static void setIdCounter(long idCounter) {
-        User.idCounter = idCounter;
-    }
-
-    public static long getAddressCounter() {
-        return addressCounter;
-    }
+//    public static long getIdCounter() {
+//        return idCounter;
+//    }
+//
+//    public static void setIdCounter(long idCounter) {
+//        User.idCounter = idCounter;
+//    }
+//
+//    public static long getAddressCounter() {
+//        return addressCounter;
+//    }
 
 //    public static void setAddressCounter(long addressCounter) {
 //        User.addressCounter = addressCounter;

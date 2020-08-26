@@ -2,6 +2,7 @@ package com.cognixia.jump.controller;
 
 import com.cognixia.jump.model.User;
 import com.cognixia.jump.repo.UserRepository;
+import com.cognixia.jump.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +45,9 @@ public class UserController {
 
     @PostMapping("/add/user")
     public void addUser(@RequestBody User newUser) {
-        newUser.setId(User.idCounter++);
-        newUser.setAddressId(User.addressCounter++);
+        newUser.setId(SequenceGeneratorService.generateSequence(User.SEQUENCE_NAME));
+//        newUser.setAddressId();
+
         User added  = service.save(newUser);
 
         System.out.println("Added " + added);
