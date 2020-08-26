@@ -14,7 +14,7 @@ import java.util.Optional;
 @RestController
 public class UserController {
     @Autowired
-    private UserRepository service;
+    UserRepository service;
 
     @GetMapping("/allUsers")
     public List<User> getUsers() {
@@ -45,8 +45,6 @@ public class UserController {
 
     @PostMapping("/add/user")
     public void addUser(@RequestBody User newUser) {
-        newUser.setId(User.idCounter++);
-        newUser.setAddressId(User.addressCounter++);
         User added  = service.save(newUser);
 
         System.out.println("Added " + added);

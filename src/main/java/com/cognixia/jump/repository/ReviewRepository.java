@@ -18,4 +18,6 @@ public interface ReviewRepository extends MongoRepository<Review, String>{
 	boolean existsByRestaurantId(Long restaurantId);
 	//added by Lori White
 	List<Review> findByRestaurantId(Long restaurantId);
+	//added by Lori White
+	boolean existsById(Long id);
 }

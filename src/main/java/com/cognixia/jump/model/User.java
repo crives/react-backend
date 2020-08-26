@@ -1,15 +1,17 @@
 package com.cognixia.jump.model;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
-public class User {
+public class User implements Serializable {
 
-
-    public static long idCounter = 0;
-    public static long addressCounter = 0;
-
+	private static final long serialVersionUID = 7480002806979269998L;
+	
+	private static long idCounter = 1;
+	
     public enum Role {
         ROLE_USER, ROLE_ADMIN
     }
@@ -25,11 +27,11 @@ public class User {
     private boolean enable;
 
     public User() {
-        this(-1L, "N/A", "N/A", "N/A", "N/A", -1L, Role.ROLE_USER, false);
+        this("N/A", "N/A", "N/A", "N/A", -1L, Role.ROLE_USER, false);
     }
 
-    public User(Long id, String email, String password, String firstName, String lastName, Long addressId, Role userRole, boolean enable) {
-        this.id = id;
+    public User(String email, String password, String firstName, String lastName, Long addressId, Role userRole, boolean enable) {
+        this.id = idCounter++;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
@@ -42,9 +44,9 @@ public class User {
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
-        this.id = id;
+    	this.id = id;
     }
 
     public String getEmail() {
@@ -93,22 +95,6 @@ public class User {
 
     public void setUserRole(Role userRole) {
         this.userRole = userRole;
-    }
-
-    public static long getIdCounter() {
-        return idCounter;
-    }
-
-    public static void setIdCounter(long idCounter) {
-        User.idCounter = idCounter;
-    }
-
-    public static long getAddressCounter() {
-        return addressCounter;
-    }
-
-    public static void setAddressCounter(long addressCounter) {
-        User.addressCounter = addressCounter;
     }
 
     public boolean isEnable() {
