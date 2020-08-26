@@ -12,18 +12,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-
+import com.cognixia.jump.config.MongoConfig;
 import com.cognixia.jump.model.Address;
 import com.cognixia.jump.repository.AddressRepository;
+import com.cognixia.jump.service.MyUserDetailService;
 
-@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes={MongoConfig.class})
 @WebMvcTest(AddressController.class)
 class AddressControllerTest {
 
@@ -32,11 +33,14 @@ class AddressControllerTest {
 	@MockBean
 	private AddressRepository repo;
 	
+	MyUserDetailService userDetailsService;
+	
 	AddressController controller;
 	
 	@Autowired
 	private MockMvc mockMvc;
 	
+	@WithMockUser("spring")
 	@Test
 	void testGetAddressById() throws Exception {
 		String uri = STARTING_URI + "/address/{id}";
