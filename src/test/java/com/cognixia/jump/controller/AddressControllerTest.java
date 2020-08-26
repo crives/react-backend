@@ -40,7 +40,7 @@ class AddressControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	@WithMockUser("spring")
+	@WithMockUser(value="spring")
 	@Test
 	void testGetAddressById() throws Exception {
 		String uri = STARTING_URI + "/address/{id}";
