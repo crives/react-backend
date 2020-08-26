@@ -24,22 +24,22 @@ public class User implements Serializable {
     private String lastName;
     private Long addressId;
     private Role userRole;
-    private boolean enable;
 
     public User() {
-        this("N/A", "N/A", "N/A", "N/A", -1L, Role.ROLE_USER, false);
+        this(-1L, "N/A", "N/A", "N/A", "N/A", -1L, Role.ROLE_USER);
     }
 
-    public User(String email, String password, String firstName, String lastName, Long addressId, Role userRole, boolean enable) {
-        this.id = idCounter++;
+    public User(Long id, String email, String password, String firstName, String lastName, Long addressId, Role userRole) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.addressId = addressId;
         this.userRole = userRole;
-        this.enable = enable;
     }
+
+
 
     public Long getId() {
         return id;
@@ -97,12 +97,12 @@ public class User implements Serializable {
         this.userRole = userRole;
     }
 
-    public boolean isEnable() {
-        return enable;
+    public static long getIdCounter() {
+        return idCounter;
     }
 
-    public void setEnable(boolean enable) {
-        this.enable = enable;
+    public static void setIdCounter(long idCounter) {
+        User.idCounter = idCounter;
     }
 
     @Override
@@ -115,7 +115,6 @@ public class User implements Serializable {
                 ", lastName='" + lastName + '\'' +
                 ", addressId=" + addressId +
                 ", userRole=" + userRole +
-                ", enable=" + enable +
                 '}';
     }
 }

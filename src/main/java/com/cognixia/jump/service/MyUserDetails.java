@@ -21,7 +21,6 @@ public class MyUserDetails implements UserDetails {
     public MyUserDetails(User user) {
         this.userName = user.getEmail();
         this.password = user.getPassword();
-        this.enabled = user.isEnable();
         this.authorities = Arrays.asList(new SimpleGrantedAuthority(user.getUserRole().toString()));
     }
 
@@ -57,6 +56,6 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return true;
     }
 }
