@@ -1,7 +1,7 @@
 package com.cognixia.jump.controller;
 
 import com.cognixia.jump.model.User;
-import com.cognixia.jump.repo.UserRepository;
+import com.cognixia.jump.repository.UserRepository;
 import com.cognixia.jump.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
