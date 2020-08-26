@@ -3,15 +3,17 @@ package com.cognixia.jump.model;
 import java.io.Serializable;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 
 @Document(collection = "users")
 public class User implements Serializable {
 
-	private static final long serialVersionUID = 7480002806979269998L;
-	
-	private static long idCounter = 1;
-	
+    private static final long serialVersionUID = -4458870115303573931L;
+    @Transient
+    public static final String SEQUENCE_NAME = "user_sequence";
+
     public enum Role {
         ROLE_USER, ROLE_ADMIN
     }
@@ -95,14 +97,6 @@ public class User implements Serializable {
 
     public void setUserRole(Role userRole) {
         this.userRole = userRole;
-    }
-
-    public static long getIdCounter() {
-        return idCounter;
-    }
-
-    public static void setIdCounter(long idCounter) {
-        User.idCounter = idCounter;
     }
 
     @Override
