@@ -13,11 +13,9 @@ import com.cognixia.jump.model.Review;
  * @version v2 (08/25/2020)
  */
 @Repository
-public interface ReviewRepository extends MongoRepository<Review, String>{
+public interface ReviewRepository extends MongoRepository<Review, Long>{
 	//added by Lori White
 	boolean existsByRestaurantId(Long restaurantId);
 	//added by Lori White
 	List<Review> findByRestaurantId(Long restaurantId);
-	//added by Lori White
-	boolean existsById(Long id);
 }

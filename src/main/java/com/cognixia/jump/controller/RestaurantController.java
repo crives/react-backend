@@ -42,7 +42,7 @@ public class RestaurantController {
 	 * @throws ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database
 	 */
 	@GetMapping("/restaurant/{id}")
-	public Restaurant getRestaurantById(@PathVariable String id) throws ResourceNotFoundException {
+	public Restaurant getRestaurantById(@PathVariable Long id) throws ResourceNotFoundException {
 		Optional<Restaurant> restaurant = service.findById(id);
 		if(restaurant.isEmpty()) {
 			throw new ResourceNotFoundException("The restaurant with id= " + id + " does not exist in the database.");
