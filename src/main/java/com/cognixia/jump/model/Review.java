@@ -3,22 +3,29 @@ package com.cognixia.jump.model;
 import java.io.Serializable;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "review")
+@Document(collection = "reviews")
 public class Review implements Serializable {
 	private static final long serialVersionUID = -4458870115303573931L;
+	@Transient
+	public static final String SEQUENCE_NAME = "reviews_sequence";
+
 	
 	@Id
 	private Long id;
 	private String description;
-	private Float rating;
+	private Double rating;
 	private Long restaurantId;
 	private Long userId;
 	
-	public Review(Long id, String description, Float rating, Long restaurantId, Long userId) {
+	public Review() {
+		this("N/A", 0.00, -1L, -1L);
+	}
+	
+	public Review(String description, Double rating, Long restaurantId, Long userId) {
 		super();
-		this.id = id;
 		this.description = description;
 		this.rating = rating;
 		this.restaurantId = restaurantId;
@@ -28,7 +35,7 @@ public class Review implements Serializable {
 	public Long getId() {
 		return id;
 	}
-
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -41,11 +48,11 @@ public class Review implements Serializable {
 		this.description = description;
 	}
 
-	public Float getRating() {
+	public Double getRating() {
 		return rating;
 	}
 
-	public void setRating(Float rating) {
+	public void setRating(Double rating) {
 		this.rating = rating;
 	}
 

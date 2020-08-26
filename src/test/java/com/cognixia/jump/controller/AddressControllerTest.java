@@ -1,6 +1,5 @@
 package com.cognixia.jump.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -43,7 +42,7 @@ class AddressControllerTest {
 		String uri = STARTING_URI + "/address/{id}";
 		long id = 1;
 		
-		Address address = new Address(id, "127 test street", "Asheboro", "NC", "27205");
+		Address address = new Address("127 test street", "Asheboro", "NC", "27205");
 		
 		when( repo.findById(id) ).thenReturn(Optional.of(address));
 		

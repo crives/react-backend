@@ -1,15 +1,17 @@
 package com.cognixia.jump.model;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
-public class User {
+public class User implements Serializable {
 
-
-    public static long idCounter = 0;
-    public static long addressCounter = 0;
-
+	private static final long serialVersionUID = 7480002806979269998L;
+	
+	private static long idCounter = 1;
+	
     public enum Role {
         ROLE_USER, ROLE_ADMIN
     }
@@ -22,13 +24,12 @@ public class User {
     private String lastName;
     private Long addressId;
     private Role userRole;
-    private boolean enable;
 
     public User() {
-        this(-1L, "N/A", "N/A", "N/A", "N/A", -1L, Role.ROLE_USER, false);
+        this(-1L, "N/A", "N/A", "N/A", "N/A", -1L, Role.ROLE_USER);
     }
 
-    public User(Long id, String email, String password, String firstName, String lastName, Long addressId, Role userRole, boolean enable) {
+    public User(Long id, String email, String password, String firstName, String lastName, Long addressId, Role userRole) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -36,15 +37,16 @@ public class User {
         this.lastName = lastName;
         this.addressId = addressId;
         this.userRole = userRole;
-        this.enable = enable;
     }
+
+
 
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
-        this.id = id;
+    	this.id = id;
     }
 
     public String getEmail() {
@@ -103,22 +105,6 @@ public class User {
         User.idCounter = idCounter;
     }
 
-    public static long getAddressCounter() {
-        return addressCounter;
-    }
-
-    public static void setAddressCounter(long addressCounter) {
-        User.addressCounter = addressCounter;
-    }
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -129,7 +115,6 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", addressId=" + addressId +
                 ", userRole=" + userRole +
-                ", enable=" + enable +
                 '}';
     }
 }
