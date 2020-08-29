@@ -1,8 +1,8 @@
 package com.cognixia.jump.controller;
 
 import com.cognixia.jump.model.User;
+
 import com.cognixia.jump.repository.UserRepository;
-import com.cognixia.jump.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@RequestMapping("/userApi")
+@RequestMapping("/api")
 @RestController
 public class UserController {
     @Autowired
-    private UserRepository service;
+    UserRepository service;
 
     @GetMapping("/allUsers")
     public List<User> getUsers() {
@@ -24,7 +24,9 @@ public class UserController {
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable Long id) {
         Optional<User> userFound = service.findById(id);
-
+        System.out.println("--------------------------------------------");
+        System.out.println("Found : " + userFound);
+        System.out.println("--------------------------------------------");
         if(userFound.isPresent()) {
             return userFound.get();
         }
@@ -45,8 +47,6 @@ public class UserController {
 
     @PostMapping("/add/user")
     public void addUser(@RequestBody User newUser) {
-        newUser.setId(SequenceGeneratorService.generateSequence(User.SEQUENCE_NAME));
-//        newUser.setAddressId();
 
         User added  = service.save(newUser);
 
