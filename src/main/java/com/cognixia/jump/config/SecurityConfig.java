@@ -1,4 +1,4 @@
-package com.cognixia.jump.securityConfiguration;
+package com.cognixia.jump.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.cognixia.jump.service.MyUserDetailService;
 
+/**
+ * Configuration for Security for the Users of Restaurant Reviews API.
+ * @author David Morales and Lori White
+ * @version v3 (08/29/2020)
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -20,16 +25,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     MyUserDetailService userDetailsService;
     
+    /**
+     * Configures the Authentication with the custom user detail service.
+     * @author David Morales
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth ) throws Exception {
         auth.userDetailsService(userDetailsService);
     }
-
+    /**
+     * Retrieves the password encoder.
+     * @author David Morales
+     * @return PasswordEncoder - the instance of the password encoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
-
+    /**
+     * Configures the Http Security for all API requests.
+     * @author David Morales and Lori White
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -41,11 +57,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/reviews/restaurant/{id}").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/users/{id}").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/address/{id}").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/add/address").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.PATCH, "/api/address/street").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.PATCH, "/api/address/city").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.PATCH, "/api/address/state").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.PATCH, "/api/address/zip").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
 				.and().formLogin().permitAll()
 				.and().httpBasic()
 				.and().logout().permitAll();
     }
-
 }
