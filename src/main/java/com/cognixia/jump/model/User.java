@@ -1,20 +1,18 @@
 package com.cognixia.jump.model;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
 @Document(collection = "users")
-public class User {
+public class User implements Serializable {
 
     private static final long serialVersionUID = -4458870115303573931L;
     @Transient
     public static final String SEQUENCE_NAME = "user_sequence";
-
-
-
-//    public static long idCounter = 0;
-//    public static long addressCounter = 0;
 
     public enum Role {
         ROLE_USER, ROLE_ADMIN
@@ -48,9 +46,9 @@ public class User {
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
-        this.id = id;
+    	this.id = id;
     }
 
     public String getEmail() {
@@ -100,28 +98,6 @@ public class User {
     public void setUserRole(Role userRole) {
         this.userRole = userRole;
     }
-
-//    public static long getIdCounter() {
-//        return idCounter;
-//    }
-//
-//    public static void setIdCounter(long idCounter) {
-//        User.idCounter = idCounter;
-//    }
-//
-//    public static long getAddressCounter() {
-//        return addressCounter;
-//    }
-
-//    public static void setAddressCounter(long addressCounter) {
-//        User.addressCounter = addressCounter;
-//    }
-//
-//    public boolean isEnable() {
-//        return true;
-//    }
-
-
 
     @Override
     public String toString() {

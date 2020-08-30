@@ -44,7 +44,8 @@ public class RestaurantController {
 	@GetMapping("/restaurant/{id}")
 	public Restaurant getRestaurantById(@PathVariable Long id) throws ResourceNotFoundException {
 		Optional<Restaurant> restaurant = service.findById(id);
-		if(!restaurant.isPresent()) {
+
+		if(restaurant.isEmpty()) {
 			throw new ResourceNotFoundException("The restaurant with id= " + id + " does not exist in the database.");
 		}
 		return restaurant.get();

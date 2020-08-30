@@ -29,7 +29,7 @@ public class AddressController {
 	public Address getAddressById(@PathVariable Long id) throws ResourceNotFoundException {
 		Optional<Address> found = service.findById(id);
 		
-		if(!found.isPresent()) {
+		if(found.isEmpty()) {
 			throw new ResourceNotFoundException("Address with id=" + id + " not found");
 		}
 		

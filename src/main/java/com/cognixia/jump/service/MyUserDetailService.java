@@ -2,6 +2,8 @@ package com.cognixia.jump.service;
 
 import com.cognixia.jump.model.User;
 import com.cognixia.jump.repository.UserRepository;
+import com.cognixia.jump.securityConfiguration.MyUserDetails;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,7 +22,7 @@ public class MyUserDetailService implements UserDetailsService {
         Optional<User> userFound = userRepository.findByEmail(userName);
         System.out.println("User found: " + userFound);
         if(!userFound.isPresent()) {
-            throw new UsernameNotFoundException("Email " + userName + " does not exists");
+            throw new UsernameNotFoundException("Email " + userName + " does not exist");
         }
         return new MyUserDetails(userFound.get());
     }

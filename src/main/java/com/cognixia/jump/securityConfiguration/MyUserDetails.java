@@ -1,4 +1,4 @@
-package com.cognixia.jump.service;
+package com.cognixia.jump.securityConfiguration;
 
 import com.cognixia.jump.model.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,7 +14,6 @@ public class MyUserDetails implements UserDetails {
 
     private String userName;
     private String password;
-    private boolean enabled;
     private List<GrantedAuthority> authorities;
     public MyUserDetails() {}
 
