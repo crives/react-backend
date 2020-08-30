@@ -24,7 +24,9 @@ public class UserController {
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable Long id) {
         Optional<User> userFound = service.findById(id);
-
+        System.out.println("--------------------------------------------");
+        System.out.println("Found : " + userFound);
+        System.out.println("--------------------------------------------");
         if(userFound.isPresent()) {
             return userFound.get();
         }
