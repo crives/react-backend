@@ -1,6 +1,5 @@
-package com.cognixia.jump.securityConfiguration;
+package com.cognixia.jump.model;
 
-import com.cognixia.jump.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
