@@ -17,6 +17,7 @@ public class Address implements Serializable {
 	public static final String SEQUENCE_NAME = "address_sequence";
 	
 	@Id
+	@NotNull
 	private Long id;
 	@NotNull
 	@Pattern(regexp = "^[0-9]+\\s[a-zA-Z]\\s*$")

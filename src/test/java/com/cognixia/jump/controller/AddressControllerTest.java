@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import com.cognixia.jump.config.MongoConfig;
+import com.cognixia.jump.controller.AddressController;
 import com.cognixia.jump.model.Address;
 import com.cognixia.jump.repository.AddressRepository;
 import com.cognixia.jump.service.MyUserDetailService;

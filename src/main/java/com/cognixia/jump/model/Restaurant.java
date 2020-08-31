@@ -17,6 +17,7 @@ public class Restaurant implements Serializable {
 	public static final String SEQUENCE_NAME = "restaurants_sequence";
 	
 	@Id
+	@NotNull
 	private Long id;
 
 	@NotNull(message = "Restaurant name must not be null")
@@ -25,12 +26,12 @@ public class Restaurant implements Serializable {
 	private String imageUrl;
 
 	private String menuLink;
-
+	@NotNull
 	private String owner;
 
 	@Pattern(regexp = "^\\(\\d{3}\\)\\s?\\d{3}-\\d{4}$")
 	private String phoneNumber;
-
+	@NotNull
 	private Long addresses;
 	
 	public Restaurant() {

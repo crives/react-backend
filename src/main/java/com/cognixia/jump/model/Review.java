@@ -2,6 +2,8 @@ package com.cognixia.jump.model;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,10 +16,14 @@ public class Review implements Serializable {
 
 	
 	@Id
+	@NotNull
 	private Long id;
 	private String description;
+	@NotNull
 	private Double rating;
+	@NotNull
 	private Long restaurantId;
+	@NotNull
 	private Long userId;
 	
 	public Review() {

@@ -48,7 +48,7 @@ public class UserController {
     @PostMapping("/add/user")
     public void addUser(@RequestBody User newUser) {
 
-        User added  = service.save(newUser);
+        User added  = service.insert(newUser);
 
         System.out.println("Added " + added);
     }
