@@ -1,14 +1,22 @@
 package com.cognixia.jump.controller;
 
+import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +40,8 @@ import io.swagger.annotations.ApiOperation;
 public class RestaurantController {
 	@Autowired 
 	RestaurantRepository service;
+	@Autowired
+	private MongoOperations mongoTemplate;
 	
 	/**
 	 * Retrieves all the restaurants in the database and sorts them by name in ascending order.
@@ -117,32 +127,38 @@ public class RestaurantController {
 		return new ResponseEntity<>(deleted.get(), HttpStatus.ACCEPTED);
 	}
 	//add all the patches
-//	/**
-//	 * Updates the street of an address.
-//	 * @author Lori White
-//	 * @param addressStreet a map that holds an address id of the address and the address's street to update
-//	 * @return ResponseEntity - a response of was accepted and the updated address
-//	 * @throws ResourceNotFoundException is thrown when the id does not match an existing address in the database
-//	 */
-//	@PatchMapping("/patch/address/street")
-//	@ApiOperation( value = "", 
-//	notes = "Updates the street of an address.\n"
-//  		+ "Usage: provide a map that holds an address id of the address and the address's street to update in the database\n"
-//  		+ "Author(s): Lori White\n"
-//  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing address in the database",
-//  	response = ResponseEntity.class)
-//	public ResponseEntity<Address> patchAddressStreet(@RequestBody Map<String, String> addressStreet) throws ResourceNotFoundException {
-//		Long id = Long.parseLong(addressStreet.get("id"));
-//		String newStreet = addressStreet.get("street");
-//		Optional<Address> address = service.findById(id);
-//		if(address.isEmpty()) {
-//			throw new ResourceNotFoundException("Address with id= " + id + " was not found.");
-//		}
-//		Address updated = address.get();
-//		updated.setStreet(newStreet);
-//		service.save(updated);
-//		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
-//	}
+	/**
+	 * Updates the name of a restaurant.
+	 * @author Lori White
+	 * @param addressStreet a map that holds a restaurant id of the restaurant and the restaurant's name to update
+	 * @return ResponseEntity - a response of was accepted and the updated restaurant
+	 * @throws ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database
+	 */
+	@PatchMapping("/patch/restaurant/name")
+	@ApiOperation( value = "", 
+	notes = "Updates the name of a restaurant.\n"
+  		+ "Usage: provide a map that holds a restaurant id of the restaurant and the restaurant's name to update in the database\n"
+  		+ "Author(s): Lori White\n"
+  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database",
+  	response = ResponseEntity.class)
+	public ResponseEntity<Restaurant> patchRestaurantName(@RequestBody Map<String, String> restaurantName) throws ResourceNotFoundException {
+		Long id = Long.parseLong(restaurantName.get("id"));
+		String newName = restaurantName.get("name");
+		Optional<Restaurant> restaurant = service.findById(id);
+		if(restaurant.isEmpty()) {
+			throw new ResourceNotFoundException("Restaurant with id= " + id + " was not found.");
+		}
+		Restaurant updated = restaurant.get();
+		updated.setName(newName);
+		
+		Query query = new Query();
+        query.addCriteria(Criteria.where("id").is(updated.getId()));
+        Update update = new Update();
+        update.set("name", updated.getName());
+        updated = mongoTemplate.findAndModify(query, update, options().returnNew(true).upsert(true), Restaurant.class);
+		
+		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+	}
 //	/**
 //	 * Updates the city of an address.
 //	 * @author Lori White
