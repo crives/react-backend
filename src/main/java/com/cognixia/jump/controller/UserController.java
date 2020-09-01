@@ -8,6 +8,7 @@ import com.cognixia.jump.model.User;
 import com.cognixia.jump.repository.UserRepository;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,18 +85,46 @@ public class UserController {
 
     @PatchMapping("/patch/user/email")
     @ApiOperation( value = "",
-            notes = "Updates the email of an address.\n"
+            notes = "Updates the email of a user.\n"
                     + "Usage: provide a map that holds a user id of the user and the users's email to update in the database\n"
                     + "Author(s): David Morales\n"
                     + "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing user in the database",
             response = ResponseEntity.class)
-    public ResponseEntity<User> patchUserEmail(@RequestBody Map<String, String> userEmail) {
+    public ResponseEntity<User> patchUserEmail(@RequestBody Map<String, String> userEmail) throws ResourceNotFoundException {
         Long id = Long.parseLong(userEmail.get("id"));
         String newEmail = userEmail.get("email");
         Optional<User> user = service.findById(id);
 
         if(user.isEmpty()) {
-            throw new ResourceNotFoundException("User with id= " + id + " is not found")
+            throw new ResourceNotFoundException("User with id= " + id + " is not found");
         }
+
+        User updated = user.get();
+        updated.setEmail(newEmail);
+        service.save(updated);
+        return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
     }
+
+    @PatchMapping("/patch/user/password")
+    @ApiOperation( value = "",
+            notes = "Updates the password of a user.\n"
+                    + "Usage: provide a map that holds a user id of the user and the users's new password to update in the database\n"
+                    + "Author(s): David Morales\n"
+                    + "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing user in the database",
+            response = ResponseEntity.class)
+    public ResponseEntity<User> patchUserPassword(@RequestBody Map<String, String> userPassword) throws ResourceNotFoundException {
+        Long id = Long.parseLong(userPassword.get("id"));
+        String newPassword = userPassword.get("password");
+        Optional<User> user = service.findById(id);
+
+        if(user.isEmpty()) {
+            throw new ResourceNotFoundException("User with id= " + id + " is not found");
+        }
+
+        User updated = user.get();
+        updated.setEmail(newPassword);
+        service.save(updated);
+        return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+    }
+
 }
