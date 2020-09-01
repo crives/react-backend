@@ -1,13 +1,18 @@
 package com.cognixia.jump.controller;
 
+import com.cognixia.jump.exception.ResourceAlreadyExistsException;
+import com.cognixia.jump.exception.ResourceNotFoundException;
+import com.cognixia.jump.model.Address;
 import com.cognixia.jump.model.User;
 
 import com.cognixia.jump.repository.UserRepository;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequestMapping("/api")
@@ -22,15 +27,17 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable Long id) {
+    @ApiOperation( value = "",
+            notes = "Retrieves a user by their id.\n"
+                    + "Usage: provide an id to look up a user in the database\n"
+                    + "Author(s): David Morales\n"
+                    + "Execption(s): ResourceNotFoundException is thrown when the user id does not match any existing entries with that specified user id in the database",
+            response = User.class, produces = "application/json")
+    public User getUserById(@PathVariable Long id) throws ResourceNotFoundException {
         Optional<User> userFound = service.findById(id);
-        System.out.println("--------------------------------------------");
-        System.out.println("Found : " + userFound);
-        System.out.println("--------------------------------------------");
-        if(userFound.isPresent()) {
-            return userFound.get();
+        if(userFound.isEmpty()) {
+            throw new ResourceNotFoundException("User with id= " + id + " is not found");
         }
-
         return new User();
     }
 
@@ -46,11 +53,21 @@ public class UserController {
     }
 
     @PostMapping("/add/user")
-    public void addUser(@RequestBody User newUser) {
+    @ApiOperation( value = "",
+            notes = "Adds a user to the database.\n"
+                    + "Usage: provide a new user to add to the database\n"
+                    + "Author(s): David Morales\n"
+                    + "Execption(s): ResourceAlreadyExistsException is thrown when the email does match an existing address in the database",
+            response = ResponseEntity.class)
+    public ResponseEntity<User> addUser(@RequestBody User newUser) throws ResourceAlreadyExistsException {
+        if (service.existByEmail(newUser.getEmail())) {
 
-        User added  = service.save(newUser);
-
-        System.out.println("Added " + added);
+            //return a custom exception
+            throw new ResourceAlreadyExistsException("This user with email= " + newUser.getEmail() + " already exists.");
+        } else {
+            User added = service.save(newUser);
+            return ResponseEntity.status(201).body(added);
+        }
     }
 
     @PutMapping("/update/user")
@@ -62,6 +79,23 @@ public class UserController {
             return "Saved: " + updateUser.toString();
         } else {
             return "Could not update student, the id = " + updateUser.getId() + " doesn't exist";
+        }
+    }
+
+    @PatchMapping("/patch/user/email")
+    @ApiOperation( value = "",
+            notes = "Updates the email of an address.\n"
+                    + "Usage: provide a map that holds a user id of the user and the users's email to update in the database\n"
+                    + "Author(s): David Morales\n"
+                    + "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing user in the database",
+            response = ResponseEntity.class)
+    public ResponseEntity<User> patchUserEmail(@RequestBody Map<String, String> userEmail) {
+        Long id = Long.parseLong(userEmail.get("id"));
+        String newEmail = userEmail.get("email");
+        Optional<User> user = service.findById(id);
+
+        if(user.isEmpty()) {
+            throw new ResourceNotFoundException("User with id= " + id + " is not found")
         }
     }
 }

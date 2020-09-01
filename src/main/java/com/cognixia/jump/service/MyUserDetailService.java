@@ -1,8 +1,8 @@
 package com.cognixia.jump.service;
 
+import com.cognixia.jump.model.MyUserDetails;
 import com.cognixia.jump.model.User;
 import com.cognixia.jump.repository.UserRepository;
-import com.cognixia.jump.securityConfiguration.MyUserDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

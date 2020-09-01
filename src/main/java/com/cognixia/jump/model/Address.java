@@ -2,6 +2,7 @@ package com.cognixia.jump.model;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.data.annotation.Id;
@@ -17,25 +18,26 @@ public class Address implements Serializable {
 	
 	@Id
 	private Long id;
-
+	@NotNull
 	@Pattern(regexp = "^[0-9]+\\s[a-zA-Z]\\s*$")
 	private String street;
-
+	@NotNull
 	private String city;
-
+	@NotNull
 	@Pattern(regexp = "^[A-Z]{2}$")
 	private String state;
-
+	@NotNull
 	@Pattern(regexp = "^\\d{5}$")
 	private String zip;
 	
 	public Address() {
-		this("N/A", "N/A", "N/A", "N/A");
+		this(-1L, "N/A", "N/A", "N/A", "N/A");
 	}
 
-	public Address(@Pattern(regexp = "^[0-9]+\\s[a-zA-Z]\\s*$") String street, String city,
+	public Address(Long id, @Pattern(regexp = "^[0-9]+\\s[a-zA-Z]\\s*$") String street, String city,
 			@Pattern(regexp = "^[A-Z]{2}$") String state, @Pattern(regexp = "^\\d{5}$") String zip) {
 		super();
+		this.id = id;
 		this.street = street;
 		this.city = city;
 		this.state = state;
