@@ -2,7 +2,6 @@ package com.cognixia.jump.controller;
 
 import com.cognixia.jump.exception.ResourceAlreadyExistsException;
 import com.cognixia.jump.exception.ResourceNotFoundException;
-import com.cognixia.jump.model.Address;
 import com.cognixia.jump.model.User;
 
 import com.cognixia.jump.repository.UserRepository;
@@ -43,13 +42,13 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/user/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable long id) throws ResourceNotFoundException {
         Optional<User> userFound = service.findById(id);
         if(userFound.isPresent()) {
             service.deleteById(id);
             return ResponseEntity.status(200).body("Delete student with id = " + id);
         } else {
-            return ResponseEntity.status(400).body("Student with id= " + id + " not found");
+            throw new ResourceNotFoundException("Student with id= " + id + " not found");
         }
     }
 
@@ -61,25 +60,25 @@ public class UserController {
                     + "Execption(s): ResourceAlreadyExistsException is thrown when the email does match an existing address in the database",
             response = ResponseEntity.class)
     public ResponseEntity<User> addUser(@RequestBody User newUser) throws ResourceAlreadyExistsException {
-        if (service.existByEmail(newUser.getEmail())) {
+        if (service.existsById(newUser.getId())) {
 
             //return a custom exception
             throw new ResourceAlreadyExistsException("This user with email= " + newUser.getEmail() + " already exists.");
         } else {
-            User added = service.save(newUser);
+            User added = service.insert(newUser);
             return ResponseEntity.status(201).body(added);
         }
     }
 
     @PutMapping("/update/user")
-    public @ResponseBody String updateUser(@RequestBody User updateUser) {
+    public @ResponseBody String updateUser(@RequestBody User updateUser) throws ResourceNotFoundException {
         Optional<User> userFound = service.findById(updateUser.getId());
 
         if(userFound.isPresent()) {
             service.save(updateUser);
             return "Saved: " + updateUser.toString();
         } else {
-            return "Could not update student, the id = " + updateUser.getId() + " doesn't exist";
+            throw new ResourceNotFoundException("Could not update student, the id = " + updateUser.getId() + " doesn't exist");
         }
     }
 
