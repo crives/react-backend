@@ -71,7 +71,7 @@ public class ReviewController {
 		if(service.existsByRestaurantIdAndUserId(newReview.getRestaurantId(), newReview.getUserId()) ) {
 			throw new ResourceAlreadyExistsException("The review with restaurant id= " + newReview.getRestaurantId() + " and user id= " + newReview.getUserId() + " already exists.");
 		}
-        Review added  = service.save(newReview);
+        Review added  = service.insert(newReview);
         return new ResponseEntity<>(added, HttpStatus.CREATED);
     }
 }
