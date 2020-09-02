@@ -10,7 +10,7 @@ import com.cognixia.jump.model.Review;
 /**
  * The Repository for Reviews.
  * @author Lori White
- * @version v2 (08/25/2020)
+ * @version v3 (08/31/2020)
  */
 @Repository
 public interface ReviewRepository extends MongoRepository<Review, Long>{
@@ -18,4 +18,6 @@ public interface ReviewRepository extends MongoRepository<Review, Long>{
 	boolean existsByRestaurantId(Long restaurantId);
 	//added by Lori White
 	List<Review> findByRestaurantId(Long restaurantId);
+	//added by Lori White
+	boolean existsByRestaurantIdAndUserId(Long restaurantId, Long userId);
 }
