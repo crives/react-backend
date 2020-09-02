@@ -1,17 +1,11 @@
 package com.cognixia.jump.controller;
 
-import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,8 +34,6 @@ import io.swagger.annotations.ApiOperation;
 public class RestaurantController {
 	@Autowired 
 	RestaurantRepository service;
-	@Autowired
-	private MongoOperations mongoTemplate;
 	
 	/**
 	 * Retrieves all the restaurants in the database and sorts them by name in ascending order.
@@ -98,8 +90,8 @@ public class RestaurantController {
 		if(service.existsById(newRestaurant.getId())) {
 			throw new ResourceAlreadyExistsException("Restaurant with id= " + newRestaurant.getId() + " already exists.");
 		}
-		if(service.existsByNameAndAddresses(newRestaurant.getName(), newRestaurant.getAddresses())) {
-			throw new ResourceAlreadyExistsException("Restaurant with name= " + newRestaurant.getName() + " and address= " + newRestaurant.getAddresses() + " already exists.");
+		if(service.existsByNameAndAddressId(newRestaurant.getName(), newRestaurant.getAddressId())) {
+			throw new ResourceAlreadyExistsException("Restaurant with name= " + newRestaurant.getName() + " and address= " + newRestaurant.getAddressId() + " already exists.");
 		}
 		Restaurant created = service.insert(newRestaurant);
 		return new ResponseEntity<>(created, HttpStatus.CREATED);
@@ -126,115 +118,152 @@ public class RestaurantController {
 		service.deleteById(id);
 		return new ResponseEntity<>(deleted.get(), HttpStatus.ACCEPTED);
 	}
-	//add all the patches
 	/**
 	 * Updates the name of a restaurant.
 	 * @author Lori White
 	 * @param addressStreet a map that holds a restaurant id of the restaurant and the restaurant's name to update
 	 * @return ResponseEntity - a response of was accepted and the updated restaurant
 	 * @throws ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database
+	 * @throws ResourceAlreadyExistsException is thrown when the new name and the address id does match an existing restaurant in the database
 	 */
 	@PatchMapping("/patch/restaurant/name")
 	@ApiOperation( value = "", 
 	notes = "Updates the name of a restaurant.\n"
   		+ "Usage: provide a map that holds a restaurant id of the restaurant and the restaurant's name to update in the database\n"
   		+ "Author(s): Lori White\n"
-  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database",
+  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database, ResourceAlreadyExistsException is thrown when the new name and the address id does match an existing restaurant in the database",
   	response = ResponseEntity.class)
-	public ResponseEntity<Restaurant> patchRestaurantName(@RequestBody Map<String, String> restaurantName) throws ResourceNotFoundException {
+	public ResponseEntity<Restaurant> patchRestaurantName(@RequestBody Map<String, String> restaurantName) throws ResourceNotFoundException, ResourceAlreadyExistsException {
 		Long id = Long.parseLong(restaurantName.get("id"));
 		String newName = restaurantName.get("name");
-		Optional<Restaurant> restaurant = service.findById(id);
-		if(restaurant.isEmpty()) {
+		if(!service.existsById(id)) {
 			throw new ResourceNotFoundException("Restaurant with id= " + id + " was not found.");
 		}
-		Restaurant updated = restaurant.get();
-		updated.setName(newName);
-		
-		Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(updated.getId()));
-        Update update = new Update();
-        update.set("name", updated.getName());
-        updated = mongoTemplate.findAndModify(query, update, options().returnNew(true).upsert(true), Restaurant.class);
-		
+		Long addressId = service.findById(id).get().getAddressId();
+		if(service.existsByNameAndAddressId(newName, addressId)) {
+			throw new ResourceAlreadyExistsException("Restaurant with name= " + newName + " and address= " + addressId + " already exists.");
+		}
+		Restaurant updated = service.patch(id, "name", newName);	
 		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
 	}
-//	/**
-//	 * Updates the city of an address.
-//	 * @author Lori White
-//	 * @param addressCity a map that holds an address id of the address and the address's city to update
-//	 * @return ResponseEntity - a response of was accepted and the updated address
-//	 * @throws ResourceNotFoundException is thrown when the id does not match an existing address in the database
-//	 */
-//	@PatchMapping("/patch/address/city")
-//	@ApiOperation( value = "", 
-//	notes = "Updates the city of an address.\n"
-//  		+ "Usage: provide a map that holds an address id of the address and the address's city to update in the database\n"
-//  		+ "Author(s): Lori White\n"
-//  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing address in the database",
-//  	response = ResponseEntity.class)
-//	public ResponseEntity<Address> patchAddressCity(@RequestBody Map<String, String> addressCity) throws ResourceNotFoundException {
-//		Long id = Long.parseLong(addressCity.get("id"));
-//		String newCity = addressCity.get("city");
-//		Optional<Address> address = service.findById(id);
-//		if(address.isEmpty()) {
-//			throw new ResourceNotFoundException("Address with id= " + id + " was not found.");
-//		}
-//		Address updated = address.get();
-//		updated.setCity(newCity);
-//		service.save(updated);
-//		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
-//	}
-//	/**
-//	 * Updates the state of an address.
-//	 * @author Lori White
-//	 * @param addressState a map that holds an address id of the address and the address's state to update
-//	 * @return ResponseEntity - a response of was accepted and the updated address
-//	 * @throws ResourceNotFoundException is thrown when the id does not match an existing address in the database
-//	 */
-//	@PatchMapping("/patch/address/state")
-//	@ApiOperation( value = "", 
-//	notes = "Updates the state of an address.\n"
-//  		+ "Usage: provide a map that holds an address id of the address and the address's state to update in the database\n"
-//  		+ "Author(s): Lori White\n"
-//  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing address in the database",
-//  	response = ResponseEntity.class)
-//	public ResponseEntity<Address> patchAddressState(@RequestBody Map<String, String> addressState) throws ResourceNotFoundException {
-//		Long id = Long.parseLong(addressState.get("id"));
-//		String newState = addressState.get("state");
-//		Optional<Address> address = service.findById(id);
-//		if(address.isEmpty()) {
-//			throw new ResourceNotFoundException("Address with id= " + id + " was not found.");
-//		}
-//		Address updated = address.get();
-//		updated.setState(newState);
-//		service.save(updated);
-//		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
-//	}
-//	/**
-//	 * Updates the zip of an address.
-//	 * @author Lori White
-//	 * @param addressZip a map that holds an address id of the address and the address's zip to update
-//	 * @return ResponseEntity - a response of was accepted and the updated address
-//	 * @throws ResourceNotFoundException is thrown when the id does not match an existing address in the database
-//	 */
-//	@PatchMapping("/patch/address/zip")
-//	@ApiOperation( value = "", 
-//	notes = "Updates the zip of an address.\n"
-//  		+ "Usage: provide a map that holds an address id of the address and the address's zip to update in the database\n"
-//  		+ "Author(s): Lori White\n"
-//  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing address in the database",
-//  	response = ResponseEntity.class)
-//	public ResponseEntity<Address> patchAddressZip(@RequestBody Map<String, String> addressZip) throws ResourceNotFoundException {
-//		Long id = Long.parseLong(addressZip.get("id"));
-//		String newZip = addressZip.get("zip");
-//		Optional<Address> address = service.findById(id);
-//		if(address.isEmpty()) {
-//			throw new ResourceNotFoundException("Address with id= " + id + " was not found.");
-//		}
-//		Address updated = address.get();
-//		updated.setZip(newZip);
-//		service.save(updated);
-//		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
-//	}
+	/**
+	 * Updates the imageUrl of a restaurant.
+	 * @author Lori White
+	 * @param addressStreet a map that holds a restaurant id of the restaurant and the restaurant's imageUrl to update
+	 * @return ResponseEntity - a response of was accepted and the updated restaurant
+	 * @throws ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database
+	 */
+	@PatchMapping("/patch/restaurant/imageurl")
+	@ApiOperation( value = "", 
+	notes = "Updates the imageUrl of a restaurant.\n"
+  		+ "Usage: provide a map that holds a restaurant id of the restaurant and the restaurant's imageUrl to update in the database\n"
+  		+ "Author(s): Lori White\n"
+  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database",
+  	response = ResponseEntity.class)
+	public ResponseEntity<Restaurant> patchRestaurantImageUrl(@RequestBody Map<String, String> restaurantImageUrl) throws ResourceNotFoundException {
+		Long id = Long.parseLong(restaurantImageUrl.get("id"));
+		String newImageUrl = restaurantImageUrl.get("imageUrl");
+		if(!service.existsById(id)) {
+			throw new ResourceNotFoundException("Restaurant with id= " + id + " was not found.");
+		}
+		Restaurant updated = service.patch(id, "imageUrl", newImageUrl);	
+		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+	}
+	/**
+	 * Updates the menuLink of a restaurant.
+	 * @author Lori White
+	 * @param addressStreet a map that holds a restaurant id of the restaurant and the restaurant's menuLink to update
+	 * @return ResponseEntity - a response of was accepted and the updated restaurant
+	 * @throws ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database
+	 */
+	@PatchMapping("/patch/restaurant/menulink")
+	@ApiOperation( value = "", 
+	notes = "Updates the menuLink of a restaurant.\n"
+  		+ "Usage: provide a map that holds a restaurant id of the restaurant and the restaurant's menuLink to update in the database\n"
+  		+ "Author(s): Lori White\n"
+  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database",
+  	response = ResponseEntity.class)
+	public ResponseEntity<Restaurant> patchRestaurantMenuLink(@RequestBody Map<String, String> restaurantMenuLink) throws ResourceNotFoundException {
+		Long id = Long.parseLong(restaurantMenuLink.get("id"));
+		String newMenuLink = restaurantMenuLink.get("menuLink");
+		if(!service.existsById(id)) {
+			throw new ResourceNotFoundException("Restaurant with id= " + id + " was not found.");
+		}
+		Restaurant updated = service.patch(id, "menuLink", newMenuLink);	
+		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+	}
+	/**
+	 * Updates the owner of a restaurant.
+	 * @author Lori White
+	 * @param addressStreet a map that holds a restaurant id of the restaurant and the restaurant's owner to update
+	 * @return ResponseEntity - a response of was accepted and the updated restaurant
+	 * @throws ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database
+	 */
+	@PatchMapping("/patch/restaurant/owner")
+	@ApiOperation( value = "", 
+	notes = "Updates the owner of a restaurant.\n"
+  		+ "Usage: provide a map that holds a restaurant id of the restaurant and the restaurant's owner to update in the database\n"
+  		+ "Author(s): Lori White\n"
+  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database",
+  	response = ResponseEntity.class)
+	public ResponseEntity<Restaurant> patchRestaurantOwner(@RequestBody Map<String, String> restaurantOwner) throws ResourceNotFoundException {
+		Long id = Long.parseLong(restaurantOwner.get("id"));
+		String newOwner = restaurantOwner.get("owner");
+		if(!service.existsById(id)) {
+			throw new ResourceNotFoundException("Restaurant with id= " + id + " was not found.");
+		}
+		Restaurant updated = service.patch(id, "owner", newOwner);	
+		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+	}
+	/**
+	 * Updates the phoneNumber of a restaurant.
+	 * @author Lori White
+	 * @param addressStreet a map that holds a restaurant id of the restaurant and the restaurant's phoneNumber to update
+	 * @return ResponseEntity - a response of was accepted and the updated restaurant
+	 * @throws ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database
+	 */
+	@PatchMapping("/patch/restaurant/phonenumber")
+	@ApiOperation( value = "", 
+	notes = "Updates the phoneNumber of a restaurant.\n"
+  		+ "Usage: provide a map that holds a restaurant id of the restaurant and the restaurant's phoneNumber to update in the database\n"
+  		+ "Author(s): Lori White\n"
+  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database",
+  	response = ResponseEntity.class)
+	public ResponseEntity<Restaurant> patchRestaurantPhoneNumber(@RequestBody Map<String, String> restaurantPhoneNumber) throws ResourceNotFoundException {
+		Long id = Long.parseLong(restaurantPhoneNumber.get("id"));
+		String newPhoneNumber = restaurantPhoneNumber.get("phoneNumber");
+		if(!service.existsById(id)) {
+			throw new ResourceNotFoundException("Restaurant with id= " + id + " was not found.");
+		}
+		Restaurant updated = service.patch(id, "phoneNumber", newPhoneNumber);	
+		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+	}
+	/**
+	 * Updates the address id of a restaurant.
+	 * @author Lori White
+	 * @param addressStreet a map that holds a restaurant id of the restaurant and the restaurant's address id to update
+	 * @return ResponseEntity - a response of was accepted and the updated restaurant
+	 * @throws ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database
+	 * @throws ResourceAlreadyExistsException is thrown when the name and the new address id does match an existing restaurant in the database 
+	 */
+	@PatchMapping("/patch/restaurant/address")
+	@ApiOperation( value = "", 
+	notes = "Updates the address id of a restaurant.\n"
+  		+ "Usage: provide a map that holds a restaurant id of the restaurant and the restaurant's address id to update in the database\n"
+  		+ "Author(s): Lori White\n"
+  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database, ResourceAlreadyExistsException is thrown when the name and the new address id does match an existing restaurant in the database ",
+  	response = ResponseEntity.class)
+	public ResponseEntity<Restaurant> patchRestaurantAddressId(@RequestBody Map<String, String> restaurantAddressId) throws ResourceNotFoundException, ResourceAlreadyExistsException {
+		Long id = Long.parseLong(restaurantAddressId.get("id"));
+		Long newAddressId = Long.parseLong(restaurantAddressId.get("addressId"));
+		if(!service.existsById(id)) {
+			throw new ResourceNotFoundException("Restaurant with id= " + id + " was not found.");
+		}
+		String name = service.findById(id).get().getName();
+		if(service.existsByNameAndAddressId(name, newAddressId)) {
+			throw new ResourceAlreadyExistsException("Restaurant with name= " + name + " and address= " + newAddressId + " already exists.");
+		}
+		Restaurant updated = service.patch(id, "addressId", newAddressId);	
+		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+	}
 }
