@@ -32,7 +32,7 @@ public class Restaurant implements Serializable {
 	@Pattern(regexp = "^\\(\\d{3}\\)\\s?\\d{3}-\\d{4}$")
 	private String phoneNumber;
 	@NotNull
-	private Long addresses;
+	private Long addressId;
 	
 	public Restaurant() {
 		this("N/A", "N/A", "N/A", "N/A", "N/A", -1L);
@@ -40,14 +40,14 @@ public class Restaurant implements Serializable {
 
 	public Restaurant(@NotNull(message = "Restaurant name must not be null") String name, String imageUrl,
 			String menuLink, String owner, @Pattern(regexp = "^\\(\\d{3}\\)\\s?\\d{3}-\\d{4}$") String phoneNumber,
-			Long addresses) {
+			Long addressId) {
 		super();
 		this.name = name;
 		this.imageUrl = imageUrl;
 		this.menuLink = menuLink;
 		this.owner = owner;
 		this.phoneNumber = phoneNumber;
-		this.addresses = addresses;
+		this.addressId = addressId;
 	}
 
 	public Long getId() {
@@ -98,18 +98,18 @@ public class Restaurant implements Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Long getAddresses() {
-		return addresses;
+	public Long getAddressId() {
+		return addressId;
 	}
 
-	public void setAddresses(Long addresses) {
-		this.addresses = addresses;
+	public void setAddressId(Long addressId) {
+		this.addressId = addressId;
 	}
 
 	@Override
 	public String toString() {
 		return "Restaurant [id=" + id + ", name=" + name + ", imageUrl=" + imageUrl + ", menuLink=" + menuLink
-				+ ", owner=" + owner + ", phoneNumber=" + phoneNumber + ", addresses=" + addresses + "]";
+				+ ", owner=" + owner + ", phoneNumber=" + phoneNumber + ", addresses=" + addressId + "]";
 	}
 
 }
