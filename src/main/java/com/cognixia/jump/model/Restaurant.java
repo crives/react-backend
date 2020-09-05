@@ -1,20 +1,23 @@
 package com.cognixia.jump.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "restaurant")
+@Document(collection = "restaurants")
 public class Restaurant implements Serializable {
 
 	private static final long serialVersionUID = 6041514973117274821L;
-
+	@Transient
+	public static final String SEQUENCE_NAME = "restaurants_sequence";
+	
 	@Id
+	@NotNull
 	private Long id;
 
 	@NotNull(message = "Restaurant name must not be null")
@@ -23,29 +26,28 @@ public class Restaurant implements Serializable {
 	private String imageUrl;
 
 	private String menuLink;
-
+	@NotNull
 	private String owner;
 
 	@Pattern(regexp = "^\\(\\d{3}\\)\\s?\\d{3}-\\d{4}$")
 	private String phoneNumber;
-
-	private Long addresses;
+	@NotNull
+	private Long addressId;
 	
 	public Restaurant() {
-		this(-1L, "N/A", "N/A", "N/A", "N/A", "N/A", -1L);
+		this("N/A", "N/A", "N/A", "N/A", "N/A", -1L);
 	}
 
-	public Restaurant(Long id, @NotNull(message = "Restaurant name must not be null") String name, String imageUrl,
+	public Restaurant(@NotNull(message = "Restaurant name must not be null") String name, String imageUrl,
 			String menuLink, String owner, @Pattern(regexp = "^\\(\\d{3}\\)\\s?\\d{3}-\\d{4}$") String phoneNumber,
-			Long addresses) {
+			Long addressId) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.imageUrl = imageUrl;
 		this.menuLink = menuLink;
 		this.owner = owner;
 		this.phoneNumber = phoneNumber;
-		this.addresses = addresses;
+		this.addressId = addressId;
 	}
 
 	public Long getId() {
@@ -55,7 +57,7 @@ public class Restaurant implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
 	public String getName() {
 		return name;
 	}
@@ -96,18 +98,18 @@ public class Restaurant implements Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Long getAddresses() {
-		return addresses;
+	public Long getAddressId() {
+		return addressId;
 	}
 
-	public void setAddresses(List<Long> addresses) {
-		addresses.addAll(addresses);
+	public void setAddressId(Long addressId) {
+		this.addressId = addressId;
 	}
 
 	@Override
 	public String toString() {
 		return "Restaurant [id=" + id + ", name=" + name + ", imageUrl=" + imageUrl + ", menuLink=" + menuLink
-				+ ", owner=" + owner + ", phoneNumber=" + phoneNumber + ", addresses=" + addresses + "]";
+				+ ", owner=" + owner + ", phoneNumber=" + phoneNumber + ", addresses=" + addressId + "]";
 	}
 
 }

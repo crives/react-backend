@@ -1,26 +1,33 @@
 package com.cognixia.jump.model;
 
+import java.io.Serializable;
+
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "address")
-public class Address {
+public class Address implements Serializable {
 
-	public static long counter = 0;
+	private static final long serialVersionUID = -6174792291767963142L;
+	@Transient
+	public static final String SEQUENCE_NAME = "address_sequence";
 	
 	@Id
+	@NotNull
 	private Long id;
-
+	@NotNull
 	@Pattern(regexp = "^[0-9]+\\s[a-zA-Z]\\s*$")
 	private String street;
-
+	@NotNull
 	private String city;
-
+	@NotNull
 	@Pattern(regexp = "^[A-Z]{2}$")
 	private String state;
-
+	@NotNull
 	@Pattern(regexp = "^\\d{5}$")
 	private String zip;
 	
@@ -45,7 +52,7 @@ public class Address {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
 	public String getStreet() {
 		return street;
 	}
