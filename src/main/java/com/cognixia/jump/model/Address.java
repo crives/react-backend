@@ -9,6 +9,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * The model for Address.
+ * @author Darreal Chambers and Lori White
+ * @version v2 (09/05/2020)
+ */
 @Document(collection = "address")
 public class Address implements Serializable {
 
@@ -17,27 +22,38 @@ public class Address implements Serializable {
 	public static final String SEQUENCE_NAME = "address_sequence";
 	
 	@Id
-	private Long id;
 	@NotNull
+	private Long id;
+	@NotNull(message = "Address street must not be null")
 	@Pattern(regexp = "^[0-9]+\\s[a-zA-Z]\\s*$")
 	private String street;
-	@NotNull
+	@NotNull(message = "Address city must not be null")
 	private String city;
-	@NotNull
+	@NotNull(message = "Address state must not be null")
 	@Pattern(regexp = "^[A-Z]{2}$")
 	private String state;
-	@NotNull
+	@NotNull(message = "Address zip must not be null")
 	@Pattern(regexp = "^\\d{5}$")
 	private String zip;
 	
+	/**
+	 * The default constructor.
+	 * @author Darreal Chambers and Lori White
+	 */
 	public Address() {
-		this(-1L, "N/A", "N/A", "N/A", "N/A");
+		this("N/A", "N/A", "N/A", "N/A");
 	}
-
-	public Address(Long id, @Pattern(regexp = "^[0-9]+\\s[a-zA-Z]\\s*$") String street, String city,
-			@Pattern(regexp = "^[A-Z]{2}$") String state, @Pattern(regexp = "^\\d{5}$") String zip) {
+	/**
+	 * The overloaded constructor.
+	 * @author Darreal Chambers and Lori White
+	 * @param street
+	 * @param city
+	 * @param state
+	 * @param zip
+	 */
+	public Address(@NotNull(message = "Address street must not be null") @Pattern(regexp = "^[0-9]+\\s[a-zA-Z]\\s*$") String street, @NotNull(message = "Address city must not be null") String city,
+			@NotNull(message = "Address state must not be null") @Pattern(regexp = "^[A-Z]{2}$") String state, @NotNull(message = "Address zip must not be null") @Pattern(regexp = "^\\d{5}$") String zip) {
 		super();
-		this.id = id;
 		this.street = street;
 		this.city = city;
 		this.state = state;
@@ -89,5 +105,4 @@ public class Address implements Serializable {
 		return "Address [id=" + id + ", street=" + street + ", city=" + city + ", state=" + state + ", zip=" + zip
 				+ "]";
 	}
-
 }

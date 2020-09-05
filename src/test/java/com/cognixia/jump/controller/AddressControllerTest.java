@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import com.cognixia.jump.config.MongoConfig;
+import com.cognixia.jump.controller.AddressController;
 import com.cognixia.jump.model.Address;
 import com.cognixia.jump.repository.AddressRepository;
 import com.cognixia.jump.service.MyUserDetailService;
@@ -48,9 +49,9 @@ class AddressControllerTest {
 	void testGetAddressById() throws Exception {
 		String uri = STARTING_URI + "/address/{id}";
 		
-		Address address = new Address(1L, "127 test street", "Asheboro", "NC", "27205");
-		
-		Long id = address.getId();
+		Address address = new Address("127 test street", "Asheboro", "NC", "27205");
+		address.setId(1L);
+		Long id = 1L;
 		
 		when( repo.findById(id) ).thenReturn(Optional.of(address));
 		
