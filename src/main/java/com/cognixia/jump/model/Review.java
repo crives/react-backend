@@ -8,6 +8,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * The model for Reviews.
+ * @author Lori White
+ * @version v2 (09/05/2020)
+ */
 @Document(collection = "reviews")
 public class Review implements Serializable {
 	private static final long serialVersionUID = -4458870115303573931L;
@@ -19,18 +24,18 @@ public class Review implements Serializable {
 	@NotNull
 	private Long id;
 	private String description;
-	@NotNull
+	@NotNull(message = "Review rating must not be null")
 	private Double rating;
-	@NotNull
+	@NotNull(message = "Review restaurant id must not be null")
 	private Long restaurantId;
-	@NotNull
+	@NotNull(message = "Review user id must not be null")
 	private Long userId;
 	
 	public Review() {
 		this("N/A", 0.00, -1L, -1L);
 	}
 	
-	public Review(String description, Double rating, Long restaurantId, Long userId) {
+	public Review(String description, @NotNull(message = "Review rating must not be null") Double rating, @NotNull(message = "Review restaurant id must not be null") Long restaurantId, @NotNull(message = "Review user id must not be null") Long userId) {
 		super();
 		this.description = description;
 		this.rating = rating;
