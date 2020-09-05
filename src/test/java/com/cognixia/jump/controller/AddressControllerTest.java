@@ -49,9 +49,9 @@ class AddressControllerTest {
 	void testGetAddressById() throws Exception {
 		String uri = STARTING_URI + "/address/{id}";
 		
-		Address address = new Address(1L, "127 test street", "Asheboro", "NC", "27205");
-		
-		Long id = address.getId();
+		Address address = new Address("127 test street", "Asheboro", "NC", "27205");
+		address.setId(1L);
+		Long id = 1L;
 		
 		when( repo.findById(id) ).thenReturn(Optional.of(address));
 		
