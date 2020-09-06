@@ -51,6 +51,12 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/user/{id}")
+    @ApiOperation( value = "",
+            notes = "Deletes a user from the database.\n"
+                    + "Usage: provide an id to remove a user from the database\n"
+                    + "Author(s): David Morales\n"
+                    + "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing user in the database",
+            response = ResponseEntity.class, produces = "application/json")
     public ResponseEntity<String> deleteUser(@PathVariable long id) throws ResourceNotFoundException {
         Optional<User> userFound = service.findById(id);
         if(userFound.isPresent()) {
@@ -79,6 +85,12 @@ public class UserController {
     }
 
     @PutMapping("/update/user")
+    @ApiOperation( value = "",
+            notes = "Adds a user to the database.\n"
+                    + "Usage: provide a new user to add to the database\n"
+                    + "Author(s): David Morales\n"
+                    + "Execption(s): ResourceAlreadyExistsException is thrown when the email does match an existing address in the database",
+            response = ResponseEntity.class)
     public ResponseEntity<User> updateUser(@RequestBody User updateUser) throws ResourceNotFoundException {
         Optional<User> userFound = service.findById(updateUser.getId());
 
@@ -88,6 +100,7 @@ public class UserController {
             throw new ResourceNotFoundException("Could not update student, the id = " + updateUser.getId() + " doesn't exist");
 
         }
+
         User updated = userFound.get();
         updated.setFirstName(updateUser.getFirstName());
         updated.setLastName(updateUser.getLastName());
@@ -106,19 +119,6 @@ public class UserController {
 
         updated = mongoTemplate.findAndModify(query, update, options().returnNew(true).upsert(true), User.class);
         return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
-
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("id").is(updateUser.getId()));
-//        Update update = new Update();
-//        update.set("firstName", updateUser.getFirstName());
-//        update.set("lastName", updateUser.getLastName());
-//        update.set("email", updateUser.getEmail());
-//        update.set("password", updateUser.getPassword());
-//        update.set("userRole", updateUser.getUserRole());
-//
-//
-//        return mongoTemplate.findAndModify(query, update, User.class);
-
     }
 
     @PatchMapping("/patch/user/email")
@@ -138,13 +138,13 @@ public class UserController {
             throw new ResourceNotFoundException("User with id= " + id + " is not found");
         }
 
-        User updated = user.get();
-        updated.setEmail(newEmail);
-        Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(updated.getId()));
-        Update update = new Update();
-        update.set("email", updated.getEmail());
-        updated = mongoTemplate.findAndModify(query, update, options().returnNew(true).upsert(true), User.class);
+        User updated = service.patch(id, "email", newEmail);
+//        updated.setEmail(newEmail);
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("id").is(updated.getId()));
+//        Update update = new Update();
+//        update.set("email", updated.getEmail());
+//        updated = mongoTemplate.findAndModify(query, update, options().returnNew(true).upsert(true), User.class);
         return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
     }
 
@@ -167,13 +167,13 @@ public class UserController {
 //        User updated = user.get();
 //        updated.setEmail(newPassword);
 //        service.save(updated);
-        User updated = user.get();
-        updated.setEmail(newPassword);
-        Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(updated.getId()));
-        Update update = new Update();
-        update.set("password", updated.getEmail());
-        updated = mongoTemplate.findAndModify(query, update, options().returnNew(true).upsert(true), User.class);
+        User updated = service.patch(id, "password", newPassword);
+//        updated.setEmail(newPassword);
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("id").is(updated.getId()));
+//        Update update = new Update();
+//        update.set("password", updated.getEmail());
+//        updated = mongoTemplate.findAndModify(query, update, options().returnNew(true).upsert(true), User.class);
         return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
     }
 
