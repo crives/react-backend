@@ -31,6 +31,11 @@ public class Restaurant implements Serializable {
 	private String imageUrl;
 
 	private String menuLink;
+	
+	private String description;
+	
+	private Double rating;
+	
 	@NotNull(message = "Restaurant owner must not be null")
 	private String owner;
 
@@ -44,7 +49,7 @@ public class Restaurant implements Serializable {
 	 * @author Darreal Chambers and Lori White
 	 */
 	public Restaurant() {
-		this("N/A", "N/A", "N/A", "N/A", "N/A", -1L);
+		this("N/A", "N/A", "N/A", "N/A", "N/A", "N/A", -1L);
 	}
 	/**
 	 * The overloaded constructor.
@@ -52,20 +57,23 @@ public class Restaurant implements Serializable {
 	 * @param name the restaurant's name 
 	 * @param imageUrl the restaurant's image
 	 * @param menuLink the restaurant's menu
+	 * @param description the restaurant's description
 	 * @param owner the restaurant's owner
 	 * @param phoneNumber the restaurant's phone number
 	 * @param addressId the restaurant's address 
 	 */
 	public Restaurant(@NotNull(message = "Restaurant name must not be null") String name, String imageUrl,
-			String menuLink, @NotNull(message = "Restaurant owner must not be null") String owner, @Pattern(regexp = "^\\(\\d{3}\\)\\s?\\d{3}-\\d{4}$") String phoneNumber,
+			String menuLink, String description, @NotNull(message = "Restaurant owner must not be null") String owner, @Pattern(regexp = "^\\(\\d{3}\\)\\s?\\d{3}-\\d{4}$") String phoneNumber,
 			@NotNull(message = "Restaurant address id must not be null") Long addressId) {
 		super();
 		this.name = name;
 		this.imageUrl = imageUrl;
 		this.menuLink = menuLink;
+		this.description = description;
 		this.owner = owner;
 		this.phoneNumber = phoneNumber;
 		this.addressId = addressId;
+		this.rating = 0.0;
 	}
 	/**
 	 * Retrieves the restaurant id.
@@ -132,6 +140,38 @@ public class Restaurant implements Serializable {
 		this.menuLink = menuLink;
 	}
 	/**
+	 * Retrieves the restaurant's description.
+	 * @author Lori White
+	 * @return String - the restaurant's description
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * Updates the restaurant's description.
+	 * @author Lori White
+	 * @param description the restaurant's description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	/**
+	 * Retrieves the restaurant's rating.
+	 * @author Lori White
+	 * @return Double - the restaurant's rating
+	 */
+	public Double getRating() {
+		return rating;
+	}
+	/**
+	 * Updates the restaurant's rating.
+	 * @author Lori White
+	 * @param rating the restaurant's rating
+	 */
+	public void setRating(Double rating) {
+		this.rating = rating;
+	}
+	/**
 	 * Retrieves the restaurant's owner.
 	 * @author Darreal Chambers
 	 * @return String - the restaurant's owner
@@ -189,12 +229,13 @@ public class Restaurant implements Serializable {
 	}
 	/**
 	 * Creates a string representation of a restaurant.
-	 * @author Darreal Chambers
+	 * @author Darreal Chambers and Lori White
 	 * @return String - a string representation of a restaurant
 	 */
 	@Override
 	public String toString() {
 		return "Restaurant [id=" + id + ", name=" + name + ", imageUrl=" + imageUrl + ", menuLink=" + menuLink
-				+ ", owner=" + owner + ", phoneNumber=" + phoneNumber + ", addresses=" + addressId + "]";
+				+ ", description=" + description + ", rating=" + rating + ", owner=" + owner + ", phoneNumber="
+				+ phoneNumber + ", addressId=" + addressId + "]";
 	}
 }
