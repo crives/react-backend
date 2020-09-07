@@ -195,6 +195,52 @@ public class RestaurantController {
 		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
 	}
 	/**
+	 * Updates the description of a restaurant.
+	 * @author Lori White
+	 * @param restaurantDescription a map that holds a restaurant id of the restaurant and the restaurant's description to update
+	 * @return ResponseEntity - a response of was accepted and the updated restaurant
+	 * @throws ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database
+	 */
+	@PatchMapping("/patch/restaurant/description")
+	@ApiOperation( value = "", 
+	notes = "Updates the description of a restaurant.\n"
+  		+ "Usage: provide a map that holds a restaurant id of the restaurant and the restaurant's description to update in the database\n"
+  		+ "Author(s): Lori White\n"
+  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database",
+  	response = ResponseEntity.class)
+	public ResponseEntity<Restaurant> patchRestaurantDescription(@RequestBody Map<String, String> restaurantDescription) throws ResourceNotFoundException {
+		Long id = Long.parseLong(restaurantDescription.get("id"));
+		String newDescription = restaurantDescription.get("description");
+		if(!service.existsById(id)) {
+			throw new ResourceNotFoundException("Restaurant with id= " + id + " was not found.");
+		}
+		Restaurant updated = service.patch(id, "description", newDescription);	
+		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+	}
+	/**
+	 * Updates the rating of a restaurant.
+	 * @author Lori White
+	 * @param restaurantRating a map that holds a restaurant id of the restaurant and the restaurant's rating to update
+	 * @return ResponseEntity - a response of was accepted and the updated restaurant
+	 * @throws ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database
+	 */
+	@PatchMapping("/patch/restaurant/rating")
+	@ApiOperation( value = "", 
+	notes = "Updates the rating of a restaurant.\n"
+  		+ "Usage: provide a map that holds a restaurant id of the restaurant and the restaurant's rating to update in the database\n"
+  		+ "Author(s): Lori White\n"
+  		+ "Execption(s): ResourceNotFoundException is thrown when the id does not match an existing restaurant in the database",
+  	response = ResponseEntity.class)
+	public ResponseEntity<Restaurant> patchRestaurantRating(@RequestBody Map<String, String> restaurantRating) throws ResourceNotFoundException {
+		Long id = Long.parseLong(restaurantRating.get("id"));
+		Double newRating = Double.parseDouble(restaurantRating.get("rating"));
+		if(!service.existsById(id)) {
+			throw new ResourceNotFoundException("Restaurant with id= " + id + " was not found.");
+		}
+		Restaurant updated = service.patch(id, "rating", newRating);	
+		return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+	}
+	/**
 	 * Updates the owner of a restaurant.
 	 * @author Lori White
 	 * @param restaurantOwner a map that holds a restaurant id of the restaurant and the restaurant's owner to update
